@@ -12,7 +12,6 @@ import threading
 
 from applications.ui import TaskCard
 from ui_style import palette, scale_dp, scale_font
-from kivy.uix.spinner import Spinner
 
 
 class BaseTasksTab(TabbedPanelItem):

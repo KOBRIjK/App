@@ -71,8 +71,8 @@ class TaskManager:
         cursor = conn.cursor()
 
         try:
-            user_department = (department or '').strip()
-            if not user_department and self.current_user:
+            user_department = None
+            if self.current_user:
                 user_department = (self.current_user.get('department') or '').strip()
 
             query = '''
