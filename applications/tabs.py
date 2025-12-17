@@ -244,6 +244,26 @@ class AllTasksTab(BaseTasksTab):
         self.selected_department = value if value != 'Выберите отдел' else None
         self.safe_refresh()
 
+    def _ensure_department_selected(self):
+        """Выбираем отдел из профиля пользователя, если он есть"""
+        if self.selected_department or not self.task_manager:
+            return
+
+        user = self.task_manager.current_user
+        if not user:
+            return
+
+        department = (user.get('department') or '').strip()
+        if not department:
+            return
+
+        if department not in self.available_departments:
+            self.available_departments.append(department)
+            self.department_spinner.values = self.available_departments
+
+        self.selected_department = department
+        self.department_spinner.text = department
+
     def refresh(self, force: bool = False):
         """Загрузка и отображение всех задач"""
         print(f"🔄 Обновление 'Все задачи' (force={force})...")
@@ -251,6 +271,9 @@ class AllTasksTab(BaseTasksTab):
         if not self.task_manager:
             self.show_empty("Нет подключения к менеджеру задач")
             return
+
+        # Автоподстановка отдела из профиля
+        self._ensure_department_selected()
 
         if not self.selected_department:
             self.show_empty("Выберите отдел, чтобы увидеть задачи")
